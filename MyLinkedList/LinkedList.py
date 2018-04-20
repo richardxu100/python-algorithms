@@ -27,7 +27,7 @@ class LinkedList(object):
 
     # O(N)
     def insertEnd(self, data):
-        if self.head is None:
+        if not self.head:
             self.insertStart(data)
         else:
             currentNode = self.head
