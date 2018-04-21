@@ -34,7 +34,6 @@ class BST(object):
     def getRoot(self):
         return self.rootNode
     
-    # Will delete the leftmostRight child
     def remove(self, data):
         # empty tree
         if not self.rootNode:
@@ -53,7 +52,7 @@ class BST(object):
                 self.rootNode = self.rootNode.rightChild
                 self.size -= 1
             else: # has left and right child, will replace with rightmost left child
-                delNodeParent = self.rootNode.leftChild # leftMostRightChild
+                delNodeParent = self.rootNode.leftChild
                 if not delNodeParent.rightChild:
                     self.rootNode.data = delNodeParent.data
                     if delNodeParent.leftChild:
@@ -70,36 +69,69 @@ class BST(object):
                             delNodeParent.rightChild = delNodeParent.rightChild.leftChild
                         else: # when there are no leftChilds
                             delNodeParent.rightChild = None
+                        self.size -= 1
+            return True
                 
-                
-            
-
-
-		# parent = None
-		# node = self.root
+		delNodeParent = None
+		delNode = self.root
 
 		# # find node to remove
-		# while node and node.value != data:
-		# 	parent = node
-		# 	if data < node.value:
-		# 		node = node.leftChild
-		# 	elif data > node.value:
-		# 		node = node.rightChild
+		while delNode and delNode.data != data:
+            delNodeParent = delNode
+            if data < delNode.data:
+                delNode = delNode.leftChild
+            elif data > delNode.data:
+                delNode = delNode.rightChild
 
 		# # case 1: data not found
-		# if node is None or node.value != data:
+		if not delNode:
+            return print("The data isn't in the binary search tree!")
 
 		# # case 2: remove-node has no children
-		# elif node.leftChild is None and node.rightChild is None:
+		elif not delNode.leftChild and not delNode.rightChild:
+            if data < delNodeParent.data:
+                delNodeParent.leftChild = None 
+            else:
+                delNodeParent.rightChild = None 
+            self.size -= 1
 
 		# # case 3: remove-node has left child only
-		# elif node.leftChild and node.rightChild is None:
+		elif not delNode.rightChild and delNode.leftChild:
+            if data < delNodeParent.data: # think about this
+                delNodeParent.leftChild = delNode.leftChild
+            else:
+                delNodeParent.rightChild = delNode.leftChild
+            self.size -= 1
 
 		# # case 4: remove-node has right child only
-		# elif node.leftChild is None and node.rightChild:
-
+		elif delNode.rightChild and not delNode.leftChild:
+            if data < delNodeParent.data:
+                delNodeParent.leftChild = delNode.rightChild
+            else:
+                delNodeParent.rightChild = delNode.rightChild
+            self.size -= 1
+            
 		# # case 5: remove-node has left and right children
-		# else:
+        else:
+            delNodeParent = self.rootNode.leftChild
+            if not delNodeParent.rightChild:
+                self.rootNode.data = delNodeParent.data
+                if delNodeParent.leftChild:
+                    self.rootNode.leftChild = delNodeParent.leftChild
+                else:
+                    self.rootNode.leftChild = None  # Remove the old delNode reference
+                self.size -= 1
+            while delNodeParent.rightChild:
+                if delNodeParent.rightChild.rightChild:
+                    delNodeParent = delNodeParent.rightChild
+                else:
+                    self.rootNode.data = delNodeParent.rightChild.data
+                    if delNodeParent.rightChild.leftChild:
+                        delNodeParent.rightChild = delNodeParent.rightChild.leftChild
+                    else:  # when there are no leftChilds
+                        delNodeParent.rightChild = None
+                    self.size -= 1
+		# # else:
 		# 	delNodeParent = node
 		# 	delNode = node.rightChild
 		# 	while delNode.leftChild:
@@ -135,19 +167,19 @@ class BST(object):
 
 
     def traverseInOrder(self):
-        self.traverse(self.rootNode)
+        self.__traverse(self.rootNode)
     
 
-    def traverse(self, currentNode):
+    def __traverse(self, currentNode): # a private method
         if self.size == 0:
             return print("Can't traverse an empty BST.")
         if currentNode.leftChild:
-            self.traverse(currentNode.leftChild) # can't return this recursive method, because then nothing afterward runs
+            self.__traverse(currentNode.leftChild) # can't return this recursive method, because then nothing afterward runs
         
         print(currentNode.data)
 
         if currentNode.rightChild:
-            self.traverse(currentNode.rightChild)
+            self.__traverse(currentNode.rightChild)
 
 
         
